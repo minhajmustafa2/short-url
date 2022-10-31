@@ -414,7 +414,6 @@ class Builder
     public function make(): ShortURL
     {
 
-
         if (!$this->destinationUrl) {
             throw new ShortURLException('No destination URL has been set.');
         }
@@ -422,11 +421,11 @@ class Builder
         $this->setOptions();
 
         $this->checkKeyDoesNotExist();
-
+        $shortURL = ShortURL::where('destination_url', $this->destinationUrl)
+            ->where('agency_id', $this->agencyID)
+            ->first();
         // Senegal Changes:
-        if (ShortURL::where('destination_url', $this->destinationUrl)->exists()) {
-            $shortURL = ShortURL::where('destination_url', $this->destinationUrl)->get()->first();
-        } else {
+        if (!isset($shortURL) || empty($shortURL)) {
             $shortURL = $this->insertShortURLIntoDatabase();
         }
 
