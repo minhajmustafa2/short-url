@@ -172,16 +172,17 @@ class Builder
      *
      * @throws ShortURLException
      */
-    public function destinationUrl(string $url): self
+    public function destinationUrl(string $url, $agency_id = ""): self
     {
 
         //Senegal Changes
-        $this->agencyID = \UserManager::GetCurrentUserAgencyID();
+        $this->agencyID = !isset($agency_id) || empty($agency_id) ? \UserManager::GetCurrentUserAgencyID() : $agency_id;
         $url = "{agency_url}/$url";
 
         //        if (!Str::startsWith($url, ['http://', 'https://'])) {
         //            throw new ShortURLException('The destination URL must begin with http:// or https://');
         //        }
+        
 
         $this->destinationUrl = $url;
         return $this;
