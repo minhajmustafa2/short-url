@@ -30,7 +30,7 @@ class ShortURLController
 
         $shortURL = ShortURL::where('url_key', $shortURLKey)->firstOrFail();
         //Senegal Changes: Get agency url and add in destination url
-        $agencyUrl = $this->getAgencyUrl();
+        $agencyUrl = $this->getAgencyUrl($shortURL->agency_id);
         $destination_url = str_replace('{agency_url}', $agencyUrl, $shortURL->destination_url);
 
         $resolver->handleVisit(request(), $shortURL);
@@ -40,10 +40,11 @@ class ShortURLController
     }
 
 
-    public function getAgencyUrl()
+    public function getAgencyUrl($agency_id = '')
     {
+        $agency_id = isset($agency_id) && !empty($agency_id) ? $agency_id : \UserManager::GetCurrentUserAgencyID();
         $hostname = "";
-        $agencyUrl = \AgencyManager::GetAgencyURL(\UserManager::GetCurrentUserAgencyID());
+        $agencyUrl = \AgencyManager::GetAgencyURL($agency_id);
 
         if (isset($_SERVER["HTTP_HOST"]) && !empty($_SERVER["HTTP_HOST"])) {
             switch ($_SERVER["HTTP_HOST"]) {
