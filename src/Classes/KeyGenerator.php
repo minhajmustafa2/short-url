@@ -39,7 +39,10 @@ class KeyGenerator
      */
     public function generateRandom(): string
     {
-        $ID = $this->getLastInsertedID();
+        //$ID = $this->getLastInsertedID();
+
+        //Senegal Changes: change getLastInsertedID to time
+        $ID = time();
 
         do {
             $ID++;
