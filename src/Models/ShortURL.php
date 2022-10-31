@@ -36,7 +36,7 @@ class ShortURL extends Model
      *
      * @var string
      */
-    protected $table = 'short_urls';
+    protected $table = 'data_global_short_urls';
 
     /**
      * The attributes that are mass assignable.
