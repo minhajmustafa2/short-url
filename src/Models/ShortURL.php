@@ -4,56 +4,50 @@ namespace AshAllenDesign\ShortURL\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * Class ShortURL.
  *
- * @property int $id
- * @property string $destination_url
- * @property string $default_short_url
- * @property string $url_key
- * @property bool $single_use
- * @property bool $forward_query_params
- * @property bool $track_visits
- * @property int $redirect_status_code
- * @property bool $track_ip_address
- * @property bool $track_operating_system
- * @property bool $track_operating_system_version
- * @property bool $track_browser
- * @property bool $track_browser_version
- * @property bool $track_referer_url
- * @property bool $track_device_type
- * @property Carbon $activated_at
- * @property Carbon|null $deactivated_at
- * @property Carbon $created_at
- * @property Carbon $updated_at
+ * @property int id
+ * @property string destination_url
+ * @property string default_short_url
+ * @property string url_key
+ * @property bool single_use
+ * @property bool track_visits
+ * @property int redirect_status_code
+ * @property bool track_ip_address
+ * @property bool track_operating_system
+ * @property bool track_operating_system_version
+ * @property bool track_browser
+ * @property bool track_browser_version
+ * @property bool track_referer_url
+ * @property bool track_device_type
+ * @property Carbon activated_at
+ * @property Carbon deactivated_at
+ * @property Carbon created_at
+ * @property Carbon updated_at
  */
 class ShortURL extends Model
 {
-    use HasFactory;
-
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'data_global_short_urls';
+    protected $table = 'short_urls';
 
     /**
      * The attributes that are mass assignable.
      *
-     * @var string[]
+     * @var array
      */
     protected $fillable = [
         'destination_url',
         'default_short_url',
         'url_key',
         'single_use',
-        'forward_query_params',
         'track_visits',
         'redirect_status_code',
         'track_ip_address',
@@ -80,25 +74,12 @@ class ShortURL extends Model
     ];
 
     /**
-     * @return Factory
-     */
-    protected static function newFactory()
-    {
-        $factoryConfig = config('short-url.factories');
-
-        $modelFactory = app($factoryConfig[__CLASS__]);
-
-        return $modelFactory::new();
-    }
-
-    /**
      * The attributes that should be cast to native types.
      *
      * @var array
      */
     protected $casts = [
         'single_use'                     => 'boolean',
-        'forward_query_parameters'       => 'boolean',
         'track_visits'                   => 'boolean',
         'track_ip_address'               => 'boolean',
         'track_operating_system'         => 'boolean',

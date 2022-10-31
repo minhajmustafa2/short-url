@@ -2,19 +2,14 @@
 
 namespace AshAllenDesign\ShortURL\Classes;
 
-use AshAllenDesign\ShortURL\Controllers\ShortURLController;
 use AshAllenDesign\ShortURL\Exceptions\ShortURLException;
 use AshAllenDesign\ShortURL\Exceptions\ValidationException;
 use AshAllenDesign\ShortURL\Models\ShortURL;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
-use Illuminate\Support\Traits\Conditionable;
 
 class Builder
 {
-    use Conditionable;
-
     /**
      * The class that is used for generating the
      * random URL keys.
@@ -47,15 +42,6 @@ class Builder
      * @var bool|null
      */
     protected $secure;
-
-    /**
-     * Whether or not the short url should
-     * forward query params to the
-     * destination url.
-     *
-     * @var bool|null
-     */
-    protected $forwardQueryParams;
 
     /**
      * Whether or not if the short URL should track
@@ -176,47 +162,6 @@ class Builder
     }
 
     /**
-     * Get the short URL route prefix.
-     *
-     * @return string|null
-     */
-    public function prefix(): ?string
-    {
-        $prefix = config('short-url.prefix');
-
-        if ($prefix === null) {
-            return null;
-        }
-
-        return trim($prefix, '/');
-    }
-
-    /**
-     * Get the middleware for short URL route.
-     *
-     * @return array
-     */
-    public function middleware(): array
-    {
-        return config('short-url.middleware', []);
-    }
-
-    /**
-     * Register the routes to handle the Short URL visits.
-     *
-     * @return void
-     */
-    public function routes(): void
-    {
-        Route::middleware($this->middleware())->group(function (): void {
-            Route::get(
-                '/'.$this->prefix().'/{shortURLKey}',
-                ShortURLController::class
-            )->name('short-url.invoke');
-        });
-    }
-
-    /**
      * Set the destination URL that the shortened URL
      * will redirect to.
      *
@@ -260,20 +205,6 @@ class Builder
     public function secure(bool $isSecure = true): self
     {
         $this->secure = $isSecure;
-
-        return $this;
-    }
-
-    /**
-     * Set whether if the short URL should forward
-     * query params to the destination URL.
-     *
-     * @param  bool  $shouldForwardQueryParams
-     * @return Builder
-     */
-    public function forwardQueryParams(bool $shouldForwardQueryParams = true): self
-    {
-        $this->forwardQueryParams = $shouldForwardQueryParams;
 
         return $this;
     }
@@ -404,19 +335,6 @@ class Builder
     }
 
     /**
-     * Explicitly set the key generator.
-     *
-     * @param  KeyGenerator  $keyGenerator
-     * @return $this
-     */
-    public function keyGenerator(KeyGenerator $keyGenerator): self
-    {
-        $this->keyGenerator = $keyGenerator;
-
-        return $this;
-    }
-
-    /**
      * Override the HTTP status code that will be used
      * for redirecting the visitor.
      *
@@ -493,11 +411,11 @@ class Builder
             throw new ShortURLException('No destination URL has been set.');
         }
 
-        $data = $this->toArray();
+        $this->setOptions();
 
         $this->checkKeyDoesNotExist();
 
-        $shortURL = ShortURL::create($data);
+        $shortURL = $this->insertShortURLIntoDatabase();
 
         $this->resetOptions();
 
@@ -505,20 +423,17 @@ class Builder
     }
 
     /**
-     * Returns an array of all properties used during record creation.
+     * Store the short URL in the database.
      *
-     * @return array<string,mixed>
+     * @return ShortURL
      */
-    public function toArray(): array
+    protected function insertShortURLIntoDatabase(): ShortURL
     {
-        $this->setOptions();
-
-        return [
+        return ShortURL::create([
             'destination_url'                => $this->destinationUrl,
-            'default_short_url'              => $this->buildDefaultShortUrl(),
+            'default_short_url'              => config('app.url').'/short/'.$this->urlKey,
             'url_key'                        => $this->urlKey,
             'single_use'                     => $this->singleUse,
-            'forward_query_params'           => $this->forwardQueryParams,
             'track_visits'                   => $this->trackVisits,
             'redirect_status_code'           => $this->redirectStatusCode,
             'track_ip_address'               => $this->trackIPAddress,
@@ -530,7 +445,7 @@ class Builder
             'track_device_type'              => $this->trackDeviceType,
             'activated_at'                   => $this->activateAt,
             'deactivated_at'                 => $this->deactivateAt,
-        ];
+        ]);
     }
 
     /**
@@ -559,10 +474,6 @@ class Builder
 
         if ($this->secure) {
             $this->destinationUrl = str_replace('http://', 'https://', $this->destinationUrl);
-        }
-
-        if ($this->forwardQueryParams === null) {
-            $this->forwardQueryParams = config('short-url.forward_query_params') ?? false;
         }
 
         if (! $this->urlKey) {
@@ -629,7 +540,6 @@ class Builder
         $this->urlKey = null;
         $this->singleUse = false;
         $this->secure = null;
-        $this->forwardQueryParams = null;
         $this->redirectStatusCode = 301;
 
         $this->trackVisits = null;
@@ -641,22 +551,5 @@ class Builder
         $this->trackDeviceType = null;
 
         return $this;
-    }
-
-    /**
-     * Build and return the default short URL that will be stored in the
-     * database.
-     *
-     * @return string
-     */
-    private function buildDefaultShortUrl(): string
-    {
-        $baseUrl = config('app.url').'/';
-
-        if ($this->prefix() !== null) {
-            $baseUrl .= $this->prefix().'/';
-        }
-
-        return $baseUrl.$this->urlKey;
     }
 }

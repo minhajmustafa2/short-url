@@ -18,9 +18,9 @@ class KeyGenerator
     /**
      * KeyGenerator constructor.
      */
-    public function __construct(Hashids $hashids = null)
+    public function __construct()
     {
-        $this->hashids = $hashids ?: new Hashids(config('short-url.key_salt'), config('short-url.key_length'), config('short-url.alphabet'));
+        $this->hashids = new Hashids(config('short-url.key_salt'), config('short-url.key_length'), config('short-url.alphabet'));
     }
 
     /**

@@ -3,31 +3,27 @@
 namespace AshAllenDesign\ShortURL\Models;
 
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * Class ShortURLVisit.
  *
- * @property int $id
- * @property int $short_url_id
- * @property string $ip_address
- * @property string $operating_system
- * @property string $operating_system_version
- * @property string $browser
- * @property string $browser_version
- * @property string $device_type
- * @property Carbon $visited_at
- * @property string $referer_url
- * @property Carbon $created_at
- * @property Carbon $updated_at
+ * @property int id
+ * @property int short_url_id
+ * @property string ip_address
+ * @property string operating_system
+ * @property string operating_system_version
+ * @property string browser
+ * @property string browser_version
+ * @property string device_type
+ * @property Carbon visited_at
+ * @property Carbon referer_url
+ * @property Carbon created_at
+ * @property Carbon updated_at
  */
 class ShortURLVisit extends Model
 {
-    use HasFactory;
-
     const DEVICE_TYPE_MOBILE = 'mobile';
 
     const DEVICE_TYPE_DESKTOP = 'desktop';
@@ -41,12 +37,12 @@ class ShortURLVisit extends Model
      *
      * @var string
      */
-    protected $table = 'data_global_short_url_visits';
+    protected $table = 'short_url_visits';
 
     /**
      * The attributes that are mass assignable.
      *
-     * @var string[]
+     * @var array
      */
     protected $fillable = [
         'short_url_id',
@@ -81,24 +77,12 @@ class ShortURLVisit extends Model
     ];
 
     /**
-     * @return Factory
-     */
-    protected static function newFactory()
-    {
-        $factoryConfig = config('short-url.factories');
-
-        $modelFactory = app($factoryConfig[__CLASS__]);
-
-        return $modelFactory::new();
-    }
-
-    /**
      * A URL visit belongs to one specific shortened URL.
      *
      * @return BelongsTo
      */
     public function shortURL(): BelongsTo
     {
-        return $this->belongsTo(ShortURL::class, 'short_url_id');
+        return $this->belongsTo(ShortURL::class);
     }
 }
