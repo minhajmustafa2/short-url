@@ -23,6 +23,9 @@ class ShortURLController
      */
     public function __invoke(Request $request, Resolver $resolver, string $shortURLKey): RedirectResponse
     {
+        echo "here ... ";
+        exit;
+
         if ($request->route()->getName() === 'short-url.invoke'
             && config('short-url.disable_default_route')) {
             abort(404);
