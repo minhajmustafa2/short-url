@@ -37,7 +37,7 @@ class ShortURLVisit extends Model
      *
      * @var string
      */
-    protected $table = 'short_url_visits';
+    protected $table = 'data_global_short_url_visits';
 
     /**
      * The attributes that are mass assignable.
