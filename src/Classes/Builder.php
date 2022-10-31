@@ -182,7 +182,7 @@ class Builder
         //        if (!Str::startsWith($url, ['http://', 'https://'])) {
         //            throw new ShortURLException('The destination URL must begin with http:// or https://');
         //        }
-        
+
 
         $this->destinationUrl = $url;
         return $this;
