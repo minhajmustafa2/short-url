@@ -1,7 +1,3 @@
 <?php
 
-use AshAllenDesign\ShortURL\Facades\ShortURL;
-
-if (! config('short-url.disable_default_route')) {
-    ShortURL::routes();
-}
+Route::get('/short/{shortURLKey}', 'AshAllenDesign\ShortURL\Controllers\ShortURLController')->name('short-url.invoke');

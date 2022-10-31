@@ -4,42 +4,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Custom Prefix
-    |--------------------------------------------------------------------------
-    |
-    | This configuration value is used to determine the prefix that
-    | is registered for the short URL route.
-    |
-    */
-    'prefix' => '/short',
-
-    /*
-    |--------------------------------------------------------------------------
-    | Middleware
-    |--------------------------------------------------------------------------
-    |
-    | Define any middleware that the default short URL route will use.
-    |
-    */
-    'middleware' => [
-        //
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Eloquent Factories
-    |--------------------------------------------------------------------------
-    |
-    | Define eloquent factories that you will use for your testing purposes.
-    |
-    */
-    'factories' => [
-        \AshAllenDesign\ShortURL\Models\ShortURL::class => \AshAllenDesign\ShortURL\Models\Factories\ShortURLFactory::class,
-        \AshAllenDesign\ShortURL\Models\ShortURLVisit::class => \AshAllenDesign\ShortURL\Models\Factories\ShortURLVisitFactory::class,
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
     | Custom Routing
     |--------------------------------------------------------------------------
     |
@@ -52,21 +16,6 @@ return [
     |
     */
     'disable_default_route' => false,
-
-    /*
-    |--------------------------------------------------------------------------
-    | Forwards query parameters
-    |--------------------------------------------------------------------------
-    |
-    | Here you can specify if the newly created short URLs will forward
-    | the query parameters to the destination by default. This option
-    | can be overridden when creating the short URL with the
-    | ->forwardQueryParams() method.
-    |
-    | eg: https://yoursite.com/short/xxx?a=b => https://destination.com/page?a=b
-    |
-    */
-    'forward_query_params' => false,
 
     /*
     |--------------------------------------------------------------------------

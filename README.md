@@ -31,11 +31,9 @@
             - [Tracking Referer URL](#tracking-referer-url)
         - [Single Use](#single-use)
         - [Enforce HTTPS](#enforce-https)
-        - [Forwarding Query Parameters](#forwarding-query-parameters)
         - [Redirect Status Code](#redirect-status-code)
         - [Activation and Deactivation Times](#activation-and-deactivation-times)
         - [Facade](#facade)
-        - [Conditionals](#conditionals)
     - [Using the Shortened URLs](#using-the-shortened-urls)
         - [Default Route and Controller](#default-route-and-controller)
         - [Custom Route](#custom-route)
@@ -55,7 +53,6 @@
         - [Tracked Fields](#tracked-fields)
     - [Events](#events)
         - [Short URL Visited](#short-url-visited)
-    - [Model Factories](#model-factories)
 - [Testing](#testing)
 - [Security](#security)
 - [Contribution](#contribution)
@@ -73,8 +70,8 @@ A Laravel package that can be used for adding shortened URLs to your existing we
 ### Requirements
 The package has been developed and tested to work with the following minimum requirements:
 
-- PHP 8.0
-- Laravel 8.0
+- PHP 7.2
+- Laravel 6.0
 
 Short URL requires either the [BC Math](https://secure.php.net/manual/en/book.bc.php) or [GMP](https://secure.php.net/manual/en/book.gmp.php) PHP extensions in order to work.
 
@@ -264,19 +261,6 @@ $shortURLObject = $builder->destinationUrl('http://destination.com')->secure()->
 // Destination URL: https://destination.com
  ```
 
-#### Forwarding Query Parameters
-When building a short URL, you might want to forward the query parameters sent in the request to destination URL. By default, this functionality is disabled, but can be enabled by setting the `forward_query_params` config option to `true`.
-
-Alternatively, you can also use the `->forwardQueryParams()` method when building your shortened URL, as shown in the example below:
-
- ```php
-$builder = new \AshAllenDesign\ShortURL\Classes\Builder();
- 
-$shortURLObject = $builder->destinationUrl('http://destination.com?param1=test')->forwardQueryParams()->make();
- ```
-
-Based on the example above, assuming that the original short URL's `destination_url` was `https://destination.com`, making a request to `https://webapp.com/short/xxx?param1=abc&param2=def` would redirect to `https://destination.com?param1=test&param2=def`
-
 #### Redirect Status Code
 
 By default, all short URLs are redirected with a ``` 301 ``` HTTP status code. But, this can be overridden when building
@@ -289,7 +273,7 @@ $builder = new \AshAllenDesign\ShortURL\Classes\Builder();
 $shortURLObject = $builder->destinationUrl('http://destination.com')->redirectStatusCode(302)->make();
  ```
 
-#### Activation and Deactivation Times
+### Activation and Deactivation Times
 
 By default, all short URLs that you create are active until you delete them. However, you may set activation and deactivation
 times for your URLs when you're creating them.
@@ -339,42 +323,6 @@ class Controller
 }
 ```
 
-#### Conditionals
-
-The `Builder` class uses the `Illuminate\Support\Traits\Conditionable` trait, so you can use the `when` and `unless` methods when building your short URLs.
-
-For example, let's take this block of code that uses `if` when building the short URL:
-
-```php
-use AshAllenDesign\ShortURL\Classes\Builder;
- 
-$shortURLObject = (new Builder())
-    ->destinationUrl('https://destination.com');
-
-if ($request->date('activation')) {
-    $builder = $builder->activateAt($request->date('activation'));
-};
-
-$shortURLObject = $builder->make();)
-```
-
-This could be rewritten using `when` like so:
-
- ```php
-use AshAllenDesign\ShortURL\Classes\Builder;
-use Carbon\Carbon;
- 
-$shortURLObject = (new Builder())
-    ->destinationUrl('https://destination.com')
-    ->when(
-        $request->date('activation'),
-        function (Builder $builder, Carbon $activateDate): Builder  {
-            return $builder->activateAt($activateDate);
-        },
-    )
-    ->make();
- ```
-
 ### Using the Shortened URLs
 #### Default Route and Controller
 By default, the shortened URLs that are created use the package's route and controller. The routes use the following structure:
@@ -413,65 +361,14 @@ Each of these fields can be toggled in the config files so that you only record 
 do this are provided for this in the [Customisation](#customisation) section below.
 
 ### Customisation
-
-#### Customising the Default Route
-
-##### Customising the Prefix
-
-The package comes with a route that you can use for your short URLs. By default, this route is `/short/{shortURLKey}`.
-
-You might want to keep using this default route but change the `/short/` prefix to something else. To do this, you can change the `prefix` field in the config.
-
-For example, to change the default short URL to `/s`, you could change the config value like so:
-
-```
-'prefix' => 's',
-```
-
-##### Removing the Prefix
-
-You may also remove the prefix from the default route completely. For example, if you want your short URL to be accessible via `/{shortUrlKey}`, then you can update the `prefix` config value to `null` like so:
-
-```
-'prefix' => null,
-```
-
-##### Defining Middleware
-
-You may wish to run the default short URL through some middleware in your application. To do this, you can define the middleware that the route should use via the `middleware` config value.
-
-For example, if you have a `MyAwesomeMiddleware` class, you could update your `short-url` config like so:
-
-```
-'middleware' => [
-    MyAwesomeMiddleware::class,
-],
-```
-
-You can also use this same approach to define middleware groups rather than individual middleware classes. For example, if you want your default short URL route to use the `web` middleware group, you could update your config like so:
-
-```
-'middleware' => [
-    'web',
-],
-```
-
-It's important to note that this middleware will only be automatically applied to the default short URL route that ships with the package. If you are defining your own route, you'll need to apply this middleware to your route yourself.
-
 #### Disabling the Default Route
 If you have added your own custom route to your project, you may want to block the default route that the package provides.
-You can do this by setting the following value in the config:
+You can do this by setting the setting the following value in the config:
 
 ```
 'disable_default_route' => true,
 ```
-If the default route is disabled, any visitors who go to the ```/short/{shortURLKey}``` route will receive a HTTP 404.
-
-You may want to manually prevent the route from being automatically registered and manually register it yourself in your own routes file. To do this you can add the following code to your routes file (e.g. `web.php`):
-
-```php
-\AshAllenDesign\ShortURL\Facades\ShortURL::routes();
-```
+If the default route is disabled, any visitors who go to the ```/short/{urlKey}``` route will receive a HTTP 404.
 
 #### Default URL Key Length 
 When building a shortened URL, you have the option to define your own URL key or to randomly generate one. If one is
@@ -594,46 +491,20 @@ $shortURL = \AshAllenDesign\ShortURL\Models\ShortURL::first();
 $shortURL->trackingFields();
 ``` 
 
-### Model Factories
-
-The package comes with model factories included for testing purposes which come in handy when generating polymorphic relationships. The `ShortURL` model factory also comes with extra states that you may use when necessary, such as `deactivated` and `inactive`:
-
-```php
-use AshAllenDesign\ShortURL\Models\ShortURL;
-
-$shortUrl = ShortURL::factory()->create();
-
-// URL is deactivated
-$deactivatedShortUrl = ShortURL::factory()->deactivated()->create();
-
-// URL is neither activated nor deactivated
-$inactiveShortURL = ShortURL::factory()->inactive()->create();
-```
-
-If you are using your own custom model factory, you can define the factories that the `ShortURL` and `ShortURLVisit` models should use by updating the `factories` config field:
-
-```php
-'factories' => [
-    \AshAllenDesign\ShortURL\Models\ShortURL::class => \AshAllenDesign\ShortURL\Models\Factories\ShortURLFactory::class,
-    \AshAllenDesign\ShortURL\Models\ShortURLVisit::class => \AshAllenDesign\ShortURL\Models\Factories\ShortURLVisitFactory::class
-],
-```
-
 ### Events
 
 #### Short URL Visited
  
 Each time a short URL is visited, the following event is fired that can be listened on:
-
 ```
 AshAllenDesign\ShortURL\Events\ShortURLVisited
 ```
 
-If you are redirecting users with a `301` HTTP status code, it's possible that this event will NOT be fired
+If you are redirecting users with a ``` 301 ``` HTTP status code, it's possible that this event will NOT be fired
 if a visitor has already visited this short URL before. This is due to the fact that most browsers will cache the
 intended destination URL as a 'permanent redirect' and won't actually visit the short URL first.
 
-For better results, use the `302` HTTP status code as most browsers will treat the short URL as a 'temporary redirect'.
+For better results, use the ``` 302 ``` HTTP status code as most browsers will treat the short URL as a 'temporary redirect'.
 This means that the short URL will be visited in the browser and the event will be dispatched as expected before redirecting
 to the destination URL.
 
@@ -662,8 +533,6 @@ Note: A contribution guide will be added soon.
 - [Nathan Giesbrecht](https://github.com/NathanGiesbrecht)
 - [Carlos A. Escobar](https://github.com/carlosjs23)
 - [Victor-Emil Rossil Andersen](https://github.com/Victor-emil)
-- [Julien Arcin](https://github.com/julienarcin)
-- [Ryan Chandler](https://github.com/ryangjchandler)
 - [All Contributors](https://github.com/ash-jc-allen/short-url/graphs/contributors)
 
 ## Changelog

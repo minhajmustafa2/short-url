@@ -59,7 +59,6 @@ class ResolverTest extends TestCase
             'url_key'           => '12345',
             'single_use'        => true,
             'track_visits'      => true,
-            'activated_at'      => now()->subSecond(),
         ]);
 
         $request = Request::create(config('app.url').'/short/12345');
@@ -79,7 +78,6 @@ class ResolverTest extends TestCase
             'url_key'           => '12345',
             'single_use'        => false,
             'track_visits'      => true,
-            'activated_at'      => now()->subSecond(),
         ]);
 
         ShortURLVisit::create(['short_url_id' => $shortURL->id, 'visited_at' => now()]);
@@ -100,7 +98,6 @@ class ResolverTest extends TestCase
             'url_key'           => '12345',
             'single_use'        => false,
             'track_visits'      => false,
-            'activated_at'      => now()->subSecond(),
         ]);
 
         $request = Request::create(config('app.url').'/short/12345');
@@ -136,7 +133,6 @@ class ResolverTest extends TestCase
             'track_browser_version'          => true,
             'track_referer_url'              => true,
             'track_device_type'              => true,
-            'activated_at'                   => now()->subSecond(),
         ]);
 
         $request = Request::create(config('app.url').'/short/12345');
@@ -187,7 +183,6 @@ class ResolverTest extends TestCase
             'track_browser_version'          => false,
             'track_referer_url'              => false,
             'track_device_type'              => true,
-            'activated_at'                   => now()->subSecond(),
         ]);
 
         $request = Request::create(config('app.url').'/short/12345', 'GET', [], [], [], [
@@ -230,7 +225,6 @@ class ResolverTest extends TestCase
             'url_key'           => '12345',
             'single_use'        => true,
             'track_visits'      => false,
-            'activated_at'      => now()->subSecond(),
         ]);
 
         $request = Request::create(config('app.url').'/short/12345');
@@ -262,7 +256,6 @@ class ResolverTest extends TestCase
             'track_browser_version'          => true,
             'track_referer_url'              => true,
             'track_device_type'              => true,
-            'activated_at'                   => now()->subSecond(),
         ]);
 
         $request = Request::create(config('app.url').'/short/12345', 'GET', [], [], [], [
@@ -308,7 +301,6 @@ class ResolverTest extends TestCase
             'track_browser_version'          => true,
             'track_referer_url'              => true,
             'track_device_type'              => true,
-            'activated_at'                   => now()->subSecond(),
         ]);
 
         $request = Request::create(config('app.url').'/short/12345', 'GET', [], [], [], [
@@ -357,7 +349,6 @@ class ResolverTest extends TestCase
             'track_browser_version'          => true,
             'track_referer_url'              => true,
             'track_device_type'              => true,
-            'activated_at'                   => now()->subSecond(),
         ]);
 
         $request = Request::create(config('app.url').'/short/12345', 'GET', [], [], [], [

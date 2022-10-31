@@ -1,42 +1,7 @@
 # Changelog
 
-**v7.3.0 (released 2022-10-17):**
-- Added model factories for the `ShortURL` and `ShortURLVisits` models. [#162](https://github.com/ash-jc-allen/short-url/pull/162)
-
-**v7.2.0 (released 2022-09-12):**
-- Added support for PHP 8.2. [#139](https://github.com/ash-jc-allen/short-url/pull/139)
-- Added support for using `when` when building short URLs. [#140](https://github.com/ash-jc-allen/short-url/pull/140)
-- Removed unused `URL` facade import. [#147](https://github.com/ash-jc-allen/short-url/pull/147)
-- Fixed bug that always resulted in a 404 if the `prefix` was set to `null`. [#149](https://github.com/ash-jc-allen/short-url/pull/149), [#158](https://github.com/ash-jc-allen/short-url/pull/158)
-
-**v7.1.0 (released 2022-08-03):**
-- Added `toArray` method to the `Builder` class. [#133](https://github.com/ash-jc-allen/short-url/pull/133)
-- Fixed `shortURL` relationship on the `ShortURLVisit` model. [#132](https://github.com/ash-jc-allen/short-url/pull/132)
-
-**v7.0.0 (released 2022-04-04):**
-- Added ability to remove the prefix from default short URLs. [#123](https://github.com/ash-jc-allen/short-url/pull/123)
-- Added ability to define middleware for the default short URL route. [#121](https://github.com/ash-jc-allen/short-url/pull/121)
-- Added ability to set the key generator on-the-fly. [#122](https://github.com/ash-jc-allen/short-url/pull/122)
-
-**v6.3.0 (released 2022-01-24):**
-- Added support for Laravel 9. [#116](https://github.com/ash-jc-allen/short-url/pull/116)
-
-**v6.2.0 (released 2021-11-26):**
-- Updated incorrectly set file permissions. [#104](https://github.com/ash-jc-allen/short-url/pull/104)
-- Updated GitHub Actions to run workflow with PHP 8.1. [#106](https://github.com/ash-jc-allen/short-url/pull/106)
-- Added support for PHPUnit ^9.0. [#101](https://github.com/ash-jc-allen/short-url/pull/101)
-- Added support for Larastan ^1.0. [#107](https://github.com/ash-jc-allen/short-url/pull/107)
-
-**v6.1.0 (released 2021-10-21):**
-- Added the ability to customise the default short URL prefix. [#100](https://github.com/ash-jc-allen/short-url/pull/100)
-
-**v6.0.0 (released 2021-10-21):**
-- Added the ability to forward query parameters to the destination URL. [#94](https://github.com/ash-jc-allen/short-url/pull/94)
-- Dropped support for Laravel 6, 7. [#96](https://github.com/ash-jc-allen/short-url/pull/96), [#98](https://github.com/ash-jc-allen/short-url/pull/98)
-- Dropped support for PHP 7.3, 7.4. [#85](https://github.com/ash-jc-allen/short-url/pull/85)
-
 **v5.2.0 (released 2021-09-21):**
-- Updated the migration for the `short_urls` table so that `url_key` is now unique and `destination_url` is now a TEXT field rather than varchar. [#80](https://github.com/ash-jc-allen/short-url/pull/80)
+- Updated the migration for the `short_urls` table so that `url_key` is now unique and `destination_url` is now a TEXT field rather than varchar. [#67](https://github.com/ash-jc-allen/short-url/pull/80)
 - Added the ability to configure the alphabet used for generating keys with `hashids`. [#77](https://github.com/ash-jc-allen/short-url/pull/77)
 
 **v5.1.0 (released 2021-06-11):**

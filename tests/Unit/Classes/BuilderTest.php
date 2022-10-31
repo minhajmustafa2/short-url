@@ -51,7 +51,7 @@ class BuilderTest extends TestCase
     {
         $builder = new Builder();
         $shortUrl = $builder->destinationUrl('http://domain.com')->secure()->make();
-        $this->assertSame('https://domain.com', $shortUrl->destination_url);
+        $this->assertEquals('https://domain.com', $shortUrl->destination_url);
     }
 
     /** @test */
@@ -59,7 +59,7 @@ class BuilderTest extends TestCase
     {
         $builder = new Builder();
         $shortUrl = $builder->destinationUrl('http://domain.com')->secure(false)->make();
-        $this->assertSame('http://domain.com', $shortUrl->destination_url);
+        $this->assertEquals('http://domain.com', $shortUrl->destination_url);
     }
 
     /** @test */
@@ -68,7 +68,7 @@ class BuilderTest extends TestCase
         Config::set('short-url.enforce_https', true);
         $builder = new Builder();
         $shortUrl = $builder->destinationUrl('http://domain.com')->make();
-        $this->assertSame('https://domain.com', $shortUrl->destination_url);
+        $this->assertEquals('https://domain.com', $shortUrl->destination_url);
     }
 
     /** @test */
@@ -77,7 +77,7 @@ class BuilderTest extends TestCase
         Config::set('short-url.enforce_https', false);
         $builder = new Builder();
         $shortUrl = $builder->destinationUrl('http://domain.com')->make();
-        $this->assertSame('http://domain.com', $shortUrl->destination_url);
+        $this->assertEquals('http://domain.com', $shortUrl->destination_url);
     }
 
     /** @test */
@@ -86,37 +86,7 @@ class BuilderTest extends TestCase
         Config::set('short-url.enforce_https', false);
         $builder = new Builder();
         $shortUrl = $builder->destinationUrl('http://domain.com')->secure()->make();
-        $this->assertSame('https://domain.com', $shortUrl->destination_url);
-    }
-
-    /** @test */
-    public function forward_query_params_is_set_from_the_config_if_it_is_not_explicitly_set()
-    {
-        Config::set('short-url.forward_query_params', true);
-
-        $builder = new Builder();
-        $shortUrl = $builder->destinationUrl('http://domain.com')->make();
-        $this->assertTrue($shortUrl->forward_query_params);
-
-        Config::set('short-url.forward_query_params', false);
-
-        $shortUrl = $builder->destinationUrl('http://domain.com')->make();
-        $this->assertFalse($shortUrl->forward_query_params);
-    }
-
-    /** @test */
-    public function forward_query_params_is_not_set_from_the_config_if_it_is_explicitly_set()
-    {
-        Config::set('short-url.forward_query_params', true);
-
-        $builder = new Builder();
-        $shortUrl = $builder->destinationUrl('http://domain.com')->forwardQueryParams(false)->make();
-        $this->assertFalse($shortUrl->forward_query_params);
-
-        Config::set('short-url.forward_query_params', false);
-
-        $shortUrl = $builder->destinationUrl('http://domain.com')->forwardQueryParams()->make();
-        $this->assertTrue($shortUrl->forward_query_params);
+        $this->assertEquals('https://domain.com', $shortUrl->destination_url);
     }
 
     /** @test */
@@ -288,7 +258,7 @@ class BuilderTest extends TestCase
         $shortURL = $builder->destinationUrl('https://domain.com')->make();
 
         $this->assertNotNull($shortURL->url_key);
-        $this->assertSame(5, strlen($shortURL->url_key));
+        $this->assertEquals(5, strlen($shortURL->url_key));
     }
 
     /** @test */
@@ -472,70 +442,5 @@ class BuilderTest extends TestCase
             'activated_at'      => now(),
             'deactivated_at'    => $deactivateTime->format('Y-m-d H:i:s'),
         ]);
-    }
-
-    /** @test */
-    public function short_url_prefix_can_be_changed_via_configuration()
-    {
-        Config::set('short-url.prefix', '/s');
-
-        ShortURLAlias::destinationUrl('http://domain.com')
-            ->urlKey('customKey')
-            ->make();
-
-        $this->assertDatabaseHas('short_urls', [
-            'default_short_url' => config('app.url').'/s/customKey',
-        ]);
-    }
-
-    /**
-     * @test
-     * @testWith ["s", "s"]
-     *           ["/s", "s"]
-     *           ["/s/", "s"]
-     *           ["s/", "s"]
-     *           [null, null]
-     */
-    public function correct_prefix_is_returned(?string $prefix, ?string $expected)
-    {
-        Config::set('short-url.prefix', $prefix);
-
-        self::assertSame($expected, ShortURLAlias::prefix());
-    }
-
-    /** @test */
-    public function short_url_can_be_created_with_a_null_prefix(): void
-    {
-        $deactivateTime = now()->addHours(2);
-
-        Config::set('short-url.prefix', null);
-
-        ShortURLAlias::destinationUrl('http://domain.com')
-            ->urlKey('customKey')
-            ->deactivateAt($deactivateTime)
-            ->make();
-
-        $this->assertDatabaseHas('short_urls', [
-            'default_short_url' => config('app.url').'/customKey',
-            'url_key' => 'customKey',
-        ]);
-    }
-
-    /**
-     * @test
-     * @testWith [true, "https://domain.com"]
-     *           [false, "https://fallback.com"]
-     */
-    public function data_can_be_set_on_the_builder_using_when(bool $flag, string $destination): void
-    {
-        $shortUrl = (new Builder())
-            ->when(
-                $flag,
-                fn (Builder $builder): Builder => $builder->destinationUrl('https://domain.com'),
-                fn (Builder $builder): Builder => $builder->destinationUrl('https://fallback.com')
-            )
-            ->make();
-
-        $this->assertSame($destination, $shortUrl->destination_url);
     }
 }
