@@ -23,15 +23,29 @@ class ShortURLController
      */
     public function __invoke(Request $request, Resolver $resolver, string $shortURLKey): RedirectResponse
     {
+
         if ($request->route()->getName() === 'short-url.invoke'
             && config('short-url.disable_default_route')) {
             abort(404);
         }
 
         $shortURL = ShortURL::where('url_key', $shortURLKey)->firstOrFail();
-        //Senegal Changes: Get agency url and add in destination url
-        $agencyUrl = $this->getAgencyUrl($shortURL->agency_id);
-        $destination_url = str_replace('{agency_url}', $agencyUrl, $shortURL->destination_url);
+
+        if (isset($shortURL->agency_id) && !empty($shortURL->agency_id)) {
+            switch ($shortURL->agency_id) {
+                case "-1":
+                    $destination_url = isset($shortURL->destination_url) && !empty($shortURL->destination_url) ? $shortURL->destination_url : '';
+                    break;
+
+                default:
+                    //Senegal Changes: Get agency url and add in destination url
+                    $agencyUrl = $this->getAgencyUrl();
+                    $destination_url = str_replace('{agency_url}', $agencyUrl, $shortURL->destination_url);
+                    break;
+            }
+        } else {
+            abort(404);
+        }
 
         $resolver->handleVisit(request(), $shortURL);
 
@@ -40,11 +54,9 @@ class ShortURLController
     }
 
 
-    public function getAgencyUrl($agency_id = '')
+    public function getAgencyUrl()
     {
-        $agency_id = isset($agency_id) && !empty($agency_id) ? $agency_id : \UserManager::GetCurrentUserAgencyID();
         $hostname = "";
-        $agencyUrl = \AgencyManager::GetAgencyURL($agency_id);
 
         if (isset($_SERVER["HTTP_HOST"]) && !empty($_SERVER["HTTP_HOST"])) {
             switch ($_SERVER["HTTP_HOST"]) {
@@ -53,7 +65,7 @@ class ShortURLController
                     $hostname = \Config::get('app.url');
                     break;
                 default:
-                    $hostname = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$agencyUrl";
+                    $hostname = request()->getSchemeAndHttpHost();
                     break;
             }
         }
