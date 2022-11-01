@@ -175,7 +175,7 @@ class Builder
     public function destinationUrl(string $url, $agency_id = ""): self
     {
         $this->agencyID = $agency_id;
-        if($agency_id != -1){
+        if ($agency_id != -1) {
             //Senegal Changes
             $url = "{agency_url}$url";
         }
@@ -421,13 +421,18 @@ class Builder
         $this->setOptions();
 
         $this->checkKeyDoesNotExist();
-        $shortURL = ShortURL::where('destination_url', $this->destinationUrl)
-            ->where('agency_id', $this->agencyID)
-            ->first();
+
         // Senegal Changes:
-        if (!isset($shortURL) || empty($shortURL)) {
+        $shortUrlExist = ShortURL::where('destination_url', $this->destinationUrl)
+            ->where('agency_id', $this->agencyID)
+            ->exists();
+        if ($shortUrlExist) {
+            $shortURL = ShortURL::where('destination_url', $this->destinationUrl)
+                ->where('agency_id', $this->agencyID)->get()->first();
+        } else {
             $shortURL = $this->insertShortURLIntoDatabase();
         }
+
 
         $this->resetOptions();
 
