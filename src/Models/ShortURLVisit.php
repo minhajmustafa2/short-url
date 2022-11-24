@@ -2,6 +2,7 @@
 
 namespace AshAllenDesign\ShortURL\Models;
 
+use App\Models\Senegal\SenegalModel;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -22,7 +23,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property Carbon created_at
  * @property Carbon updated_at
  */
-class ShortURLVisit extends Model
+class ShortURLVisit extends SenegalModel
 {
     const DEVICE_TYPE_MOBILE = 'mobile';
 
@@ -63,8 +64,8 @@ class ShortURLVisit extends Model
      */
     protected $dates = [
         'visited_at',
-        'created_at',
-        'updated_at',
+        'date_created',
+        'date_modified',
     ];
 
     /**

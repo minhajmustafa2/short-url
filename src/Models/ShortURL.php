@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-
+use App\Models\Senegal\SenegalModel;
 /**
  * Class ShortURL.
  *
@@ -29,7 +29,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property Carbon created_at
  * @property Carbon updated_at
  */
-class ShortURL extends Model
+class ShortURL extends SenegalModel
 {
     /**
      * The table associated with the model.
@@ -70,8 +70,8 @@ class ShortURL extends Model
     protected $dates = [
         'activated_at',
         'deactivated_at',
-        'created_at',
-        'updated_at',
+        'date_created',
+        'date_modified',
     ];
 
     /**
