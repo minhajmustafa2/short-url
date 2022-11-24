@@ -33,6 +33,7 @@ class ShortURLVisit extends SenegalModel
 
     const DEVICE_TYPE_ROBOT = 'robot';
 
+    public $incrementing = true;
     /**
      * The table associated with the model.
      *
