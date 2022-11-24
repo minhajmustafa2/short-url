@@ -31,6 +31,8 @@ use App\Models\Senegal\SenegalModel;
  */
 class ShortURL extends SenegalModel
 {
+    public $incrementing = true;
+
     /**
      * The table associated with the model.
      *
