@@ -1,13 +1,13 @@
 {
-    "name": "faisal-dynamologic/short-url",
+    "name": "minhajmustafa2/short-url",
     "description": "A Laravel package for creating shortened URLs for your web apps.",
     "type": "library",
     "homepage": "https://github.com/ash-jc-allen/short-url",
     "license": "MIT",
     "authors": [
         {
-            "name": "Faisal Mehmmood",
-            "email": "faisal@dynamologic.com"
+            "name": "Minhaj Mustafa",
+            "email": "minhaj.mustafa@dynamologic.com"
         }
     ],
     "keywords": [
