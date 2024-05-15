@@ -4,6 +4,54 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Custom Prefix
+    |--------------------------------------------------------------------------
+    |
+    | This configuration value is used to determine the prefix that
+    | is registered for the short URL route.
+    |
+    */
+    'prefix' => '/short',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Custom Database Connection
+    |--------------------------------------------------------------------------
+    |
+    | This configuration value is used to override the database connection
+    | that will be used by models of this package. If set to `null`, your
+    | application's default database connection will be used.
+    |
+    */
+    'connection' => null,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Middleware
+    |--------------------------------------------------------------------------
+    |
+    | Define any middleware that the default short URL route will use.
+    |
+    */
+    'middleware' => [
+        //
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Eloquent Factories
+    |--------------------------------------------------------------------------
+    |
+    | Define eloquent factories that you will use for your testing purposes.
+    |
+    */
+    'factories' => [
+        \AshAllenDesign\ShortURL\Models\ShortURL::class => \AshAllenDesign\ShortURL\Models\Factories\ShortURLFactory::class,
+        \AshAllenDesign\ShortURL\Models\ShortURLVisit::class => \AshAllenDesign\ShortURL\Models\Factories\ShortURLVisitFactory::class,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Custom Routing
     |--------------------------------------------------------------------------
     |
@@ -19,6 +67,33 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Default URL
+    |--------------------------------------------------------------------------
+    |
+    | Here you can override the default application base URL used to generate
+    | the default short URL (default_short_url). To use your application's
+    | "app.url" config value, set this field to null.
+    |
+    */
+    'default_url' => null,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Forwards query parameters
+    |--------------------------------------------------------------------------
+    |
+    | Here you can specify if the newly created short URLs will forward
+    | the query parameters to the destination by default. This option
+    | can be overridden when creating the short URL with the
+    | ->forwardQueryParams() method.
+    |
+    | eg: https://yoursite.com/short/xxx?a=b => https://destination.com/page?a=b
+    |
+    */
+    'forward_query_params' => false,
+
+    /*
+    |--------------------------------------------------------------------------
     | Enforce HTTPS in the destination URL
     |--------------------------------------------------------------------------
     |
@@ -28,7 +103,7 @@ return [
     | method.
     |
     */
-    'enforce_https'         => true,
+    'enforce_https' => true,
 
     /*
     |--------------------------------------------------------------------------
@@ -48,7 +123,7 @@ return [
     |       used, a 4 character long key will be created.
     |
     */
-    'key_length'            => 5,
+    'key_length' => 5,
 
     /*
     |--------------------------------------------------------------------------
@@ -60,7 +135,7 @@ return [
     | generated keys are unique.
     |
     */
-    'key_salt'              => 'AshAllenDesign\ShortURL',
+    'key_salt' => 'AshAllenDesign\ShortURL',
 
     /*
     |--------------------------------------------------------------------------
@@ -72,7 +147,7 @@ return [
     | and cannot contain spaces.
     |
     */
-    'alphabet'              => 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890',
+    'alphabet' => 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890',
 
     /*
     |--------------------------------------------------------------------------
@@ -85,17 +160,17 @@ return [
     | be overridden when creating a short URL.
     |
     */
-    'tracking'              => [
+    'tracking' => [
         'default_enabled' => true,
 
         'fields' => [
-            'ip_address'               => true,
-            'operating_system'         => true,
+            'ip_address' => true,
+            'operating_system' => true,
             'operating_system_version' => true,
-            'browser'                  => true,
-            'browser_version'          => true,
-            'referer_url'              => true,
-            'device_type'              => true,
+            'browser' => true,
+            'browser_version' => true,
+            'referer_url' => true,
+            'device_type' => true,
         ],
     ],
 
@@ -110,4 +185,28 @@ return [
     |
     */
     'validate_config' => false,
+
+    /*
+    |--------------------------------------------------------------------------
+    | User Agent Parser
+    |--------------------------------------------------------------------------
+    |
+    | Define the class that should be used to handle the parsing of the user
+    | agent string. This class must implement the following interface:
+    | AshAllenDesign\ShortURL\Interfaces\UserAgentDriver.
+    |
+    */
+    'user_agent_driver' => \AshAllenDesign\ShortURL\Classes\UserAgent\ParserPhpDriver::class,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Short URL Key Generator Class
+    |--------------------------------------------------------------------------
+    |
+    | Define the class that should be used to handle the creation of a unique
+    | short URL key. This class must implement the following interface:
+    | AshAllenDesign\ShortURL\Interfaces\UrlKeyGenerator.
+    |
+    */
+    'url_key_generator' => \AshAllenDesign\ShortURL\Classes\KeyGenerator::class,
 ];

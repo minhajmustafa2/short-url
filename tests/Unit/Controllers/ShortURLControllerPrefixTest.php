@@ -4,8 +4,9 @@ namespace AshAllenDesign\ShortURL\Tests\Unit\Controllers;
 
 use AshAllenDesign\ShortURL\Models\ShortURL;
 use AshAllenDesign\ShortURL\Tests\Unit\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
-class ShortURLControllerPrefixTest extends TestCase
+final class ShortURLControllerPrefixTest extends TestCase
 {
     protected function getEnvironmentSetUp($app)
     {
@@ -14,17 +15,17 @@ class ShortURLControllerPrefixTest extends TestCase
         parent::getEnvironmentSetUp($app);
     }
 
-    /** @test */
-    public function visitor_is_redirected_to_the_destination_url_with_custom_prefix()
+    #[Test]
+    public function visitor_is_redirected_to_the_destination_url_with_custom_prefix(): void
     {
         ShortURL::create([
-            'destination_url'      => 'https://google.com',
-            'default_short_url'    => config('app.url').'/'.config('short-url.prefix').'/12345',
-            'url_key'              => '12345',
-            'single_use'           => true,
-            'track_visits'         => true,
+            'destination_url' => 'https://google.com',
+            'default_short_url' => config('short-url.default_url').'/'.config('short-url.prefix').'/12345',
+            'url_key' => '12345',
+            'single_use' => true,
+            'track_visits' => true,
             'redirect_status_code' => 301,
-            'activated_at'         => now()->subMinute(),
+            'activated_at' => now()->subMinute(),
         ]);
 
         $this->get('/s/12345')->assertStatus(301)->assertRedirect('https://google.com');

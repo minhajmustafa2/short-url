@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace AshAllenDesign\ShortURL\Models;
 
 use App\Models\Senegal\SenegalModel;
@@ -27,11 +29,11 @@ class ShortURLVisit extends SenegalModel
 {
     const DEVICE_TYPE_MOBILE = 'mobile';
 
-    const DEVICE_TYPE_DESKTOP = 'desktop';
+    public const DEVICE_TYPE_DESKTOP = 'desktop';
 
-    const DEVICE_TYPE_TABLET = 'tablet';
+    public const DEVICE_TYPE_TABLET = 'tablet';
 
-    const DEVICE_TYPE_ROBOT = 'robot';
+    public const DEVICE_TYPE_ROBOT = 'robot';
 
     public $incrementing = true;
     /**
@@ -72,16 +74,38 @@ class ShortURLVisit extends SenegalModel
     /**
      * The attributes that should be cast to native types.
      *
-     * @var array
+     * @var array<string, string>
      */
     protected $casts = [
         'short_url_id' => 'integer',
+        'visited_at' => 'datetime',
     ];
+
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+
+        if (config('short-url.connection')) {
+            $this->setConnection(config('short-url.connection'));
+        }
+    }
+
+    /**
+     * @return Factory<ShortURLVisit>
+     */
+    protected static function newFactory()
+    {
+        $factoryConfig = config('short-url.factories');
+
+        $modelFactory = app($factoryConfig[__CLASS__]);
+
+        return $modelFactory::new();
+    }
 
     /**
      * A URL visit belongs to one specific shortened URL.
      *
-     * @return BelongsTo
+     * @return BelongsTo<ShortURL, ShortURLVisit>
      */
     public function shortURL(): BelongsTo
     {
