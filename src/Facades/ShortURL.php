@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace AshAllenDesign\ShortURL\Facades;
 
 use AshAllenDesign\ShortURL\Classes\Builder;
@@ -26,14 +28,12 @@ use RuntimeException;
  * @method static self deactivateAt(Carbon $deactivationTime)
  * @method static \AshAllenDesign\ShortURL\Models\ShortURL make()
  *
- * @see Builder
+ * @see \AshAllenDesign\ShortURL\Classes\Builder
  */
 class ShortURL extends Facade
 {
     /**
      * Get the registered name of the component.
-     *
-     * @return string
      *
      * @throws RuntimeException
      */

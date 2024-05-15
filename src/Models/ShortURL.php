@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace AshAllenDesign\ShortURL\Models;
 
 use Carbon\Carbon;
@@ -25,7 +27,7 @@ use App\Models\Senegal\SenegalModel;
  * @property bool track_referer_url
  * @property bool track_device_type
  * @property Carbon activated_at
- * @property Carbon deactivated_at
+ * @property Carbon|null deactivated_at
  * @property Carbon created_at
  * @property Carbon updated_at
  */
@@ -65,9 +67,9 @@ class ShortURL extends SenegalModel
     ];
 
     /**
-     * The attributes that should be mutated to dates.
+     * The attributes that should be cast to native types.
      *
-     * @var array
+     * @var array<string, string>
      */
     protected $dates = [
         'activated_at',
@@ -75,6 +77,15 @@ class ShortURL extends SenegalModel
         'date_created',
         'date_modified',
     ];
+
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+
+        if (config('short-url.connection')) {
+            $this->setConnection(config('short-url.connection'));
+        }
+    }
 
     /**
      * The attributes that should be cast to native types.
@@ -91,12 +102,14 @@ class ShortURL extends SenegalModel
         'track_browser_version'          => 'boolean',
         'track_referer_url'              => 'boolean',
         'track_device_type'              => 'boolean',
+        'activated_at'                   => 'datetime',
+        'deactivated_at'                 => 'datetime',
     ];
 
     /**
      * A short URL can be visited many times.
      *
-     * @return HasMany
+     * @return HasMany<ShortURLVisit>
      */
     public function visits(): HasMany
     {
@@ -104,11 +117,8 @@ class ShortURL extends SenegalModel
     }
 
     /**
-     * A helper method that can be used for finding
-     * a ShortURL model with the given URL key.
-     *
-     * @param  string  $URLKey
-     * @return ShortURL|null
+     * A helper method that can be used for finding a ShortURL model with the
+     * given URL key.
      */
     public static function findByKey(string $URLKey): ?self
     {
@@ -116,12 +126,10 @@ class ShortURL extends SenegalModel
     }
 
     /**
-     * A helper method that can be used for finding
-     * all of the ShortURL models with the given
-     * destination URL.
+     * A helper method that can be used for finding all the ShortURL models
+     * with the given destination URL.
      *
-     * @param  string  $destinationURL
-     * @return Collection
+     * @return Collection<int, ShortURL>
      */
     public static function findByDestinationURL(string $destinationURL): Collection
     {
@@ -129,10 +137,8 @@ class ShortURL extends SenegalModel
     }
 
     /**
-     * A helper method to determine whether if tracking
-     * is currently enabled for the short URL.
-     *
-     * @return bool
+     * A helper method to determine whether if tracking is currently enabled
+     * for the short URL.
      */
     public function trackingEnabled(): bool
     {
@@ -140,10 +146,8 @@ class ShortURL extends SenegalModel
     }
 
     /**
-     * Return an array containing the fields that are
-     * set to be tracked for the short URL.
-     *
-     * @return array
+     * Return an array containing the fields that are set to be tracked for the
+     * short URL.
      */
     public function trackingFields(): array
     {
