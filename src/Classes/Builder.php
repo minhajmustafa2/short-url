@@ -406,11 +406,11 @@ class Builder
      *
      * @return ShortURL
      */
-    protected function insertShortURLIntoDatabase(): ShortURL
+    protected function insertShortURLIntoDatabase($submodule_signature = 's'): ShortURL
     {
         return ShortURL::create([
             'destination_url' => $this->destinationUrl,
-            'default_short_url' => '{agency_url}/s/' . $this->urlKey,
+            'default_short_url' => "{agency_url}/$submodule_signature/" . $this->urlKey,
             'url_key' => $this->urlKey,
             'single_use' => $this->singleUse,
             'track_visits' => $this->trackVisits,
